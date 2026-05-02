@@ -23,8 +23,8 @@ I systematically compared three distinct approaches using a **TF-IDF Vectorizer*
 ### Evaluation Results:
 | Model | Training Time | Macro F1-Score |
 | :--- | :--- | :--- |
-| Logistic Regression | 3.10s | 0.8780 |
-| **Linear SVM (via SGD)** | **0.61s** | **0.8958** |
+| Logistic Regression | 2.42s | 0.8780 |
+| **Linear SVM (via SGD)** | **0.55s** | **0.8958** |
 | Random Forest | 13.58s | 0.8789 |
 
 ### Train Results (SVM)
