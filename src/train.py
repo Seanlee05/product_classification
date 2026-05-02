@@ -3,13 +3,16 @@ import re
 import joblib
 import time
 import nltk
+import os
+import matplotlib.pyplot as plt
+import seaborn as sns
 from nltk.corpus import stopwords
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression, SGDClassifier # <--- FIXED IMPORT
+from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import classification_report, f1_score
+from sklearn.metrics import classification_report, f1_score, confusion_matrix
 
 nltk.download('stopwords', quiet=True)
 stop_words = set(stopwords.words('english'))
@@ -24,29 +27,33 @@ def preprocess_text(text):
     return ' '.join(words)
 
 def load_data(filepath):
-    # Since we cleaned the data into 2 columns already, we load it simply
     print(f"Loading data from {filepath}...")
     df = pd.read_csv(filepath)
-    
-    # Ensure the columns match our cleaned format
-    # column 0: product_description, column 1: product_category
     X = df.iloc[:, 0].astype(str)
     y = df.iloc[:, 1].astype(str)
-    
     print("Preprocessing text...")
     X_cleaned = X.apply(preprocess_text)
     return X_cleaned, y
 
+def save_confusion_matrix(y_true, y_pred, filename, title):
+    labels = sorted(y_true.unique())
+    cm = confusion_matrix(y_true, y_pred, labels=labels)
+    plt.figure(figsize=(12, 8))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels)
+    plt.title(title)
+    plt.ylabel('Actual')
+    plt.xlabel('Predicted')
+    plt.tight_layout()
+    plt.savefig(filename)
+    print(f"Saved: {filename}")
+    plt.close()
+
 def train_and_evaluate():
-    # 1. Load Data (Make sure this path points to your CLEANED file)
     X, y = load_data('data/Cleaned_Training_data.csv')
-    
-    # 2. Stratified Split (Crucial for the imbalance we found earlier)
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42, stratify=y
     )
     
-    # 3. Define Models to evaluate
     models = {
         "Logistic Regression": LogisticRegression(class_weight='balanced', max_iter=1000, random_state=42),
         "Linear SVM (SGD)": SGDClassifier(class_weight='balanced', random_state=42),
@@ -58,52 +65,32 @@ def train_and_evaluate():
     best_name = ""
     
     print("\n--- Evaluating 3 Classification Approaches ---")
-    
     for name, clf in models.items():
         start_time = time.time()
-        
-        # Build Pipeline: TF-IDF -> Classifier
         pipeline = Pipeline([
             ('tfidf', TfidfVectorizer(max_features=10000, ngram_range=(1, 2))),
             ('clf', clf)
         ])
-        
-        # Train
         pipeline.fit(X_train, y_train)
-        
-        # Predict
         y_pred = pipeline.predict(X_test)
-        
-        # Evaluate using Macro F1 (Best for imbalanced datasets)
         macro_f1 = f1_score(y_test, y_pred, average='macro')
-        train_time = time.time() - start_time
-        
-        print(f"\n{name}:")
-        print(f"Training Time: {train_time:.2f} seconds")
-        print(f"Macro F1-Score: {macro_f1:.4f}")
+        print(f"{name}: Macro F1={macro_f1:.4f} ({time.time()-start_time:.2f}s)")
         
         if macro_f1 > best_f1:
             best_f1 = macro_f1
             best_model = pipeline
             best_name = name
 
-    print("\n" + "="*50)
-    print(f"Selecting {best_name} (Macro F1: {best_f1:.4f})")
-    print("="*50 + "\n")
-    
-    # Full report for the best model
+    print(f"\nWINNER: {best_name}")
     y_pred_best = best_model.predict(X_test)
     print(classification_report(y_test, y_pred_best))
     
-    # 4. Save the best model
-    model_path = 'models/product_classifier.pkl'
-    # Ensure directory exists
-    import os
-    if not os.path.exists('models'):
-        os.makedirs('models')
-        
-    joblib.dump(best_model, model_path)
-    print(f"Best model saved to {model_path}")
+    # GENERATE MATRIX
+    save_confusion_matrix(y_test, y_pred_best, 'data/train_confusion_matrix.png', f'Confusion Matrix: Training - {best_name}')
+    
+    if not os.path.exists('models'): os.makedirs('models')
+    joblib.dump(best_model, 'models/product_classifier.pkl')
+    print("Model saved to models/product_classifier.pkl")
 
 if __name__ == "__main__":
     train_and_evaluate()
