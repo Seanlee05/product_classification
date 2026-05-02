@@ -50,7 +50,7 @@ To prevent the model from ignoring the minority "Specialty" class, I implemented
 The model achieved an overall accuracy of **93%** on the validation set.
 
 **Observation on "Specialty & Miscellaneous":**
-While classes like "Beverages" reached F1-scores of 0.95, "Specialty" scored significantly lower (**~0.70**). 
+While classes like "Beverages" reached F1-scores of 0.95, "Specialty & Miscellaneous" scored significantly lower (**~0.70**). 
 * **Reasoning:** This is a "catch-all" category. Its vocabulary overlaps significantly with other classes, making it semantically ambiguous. 
 * **Recommendation:** In a production environment, this class should trigger a "low confidence" flag for manual human review.
 
