@@ -1,0 +1,22 @@
+# --- DATA ---
+# Ignore the raw NIQ input datasets (Requirement: Do NOT include datasets)
+data/Training_data.csv
+data/Query_and_Validation_data.csv
+
+# DO NOT ignore your results (Requirement: Artifacts / predictions on query data)
+!data/Query_and_Validation_prediction.csv
+
+# --- MODELS ---
+# DO NOT ignore your trained model (Requirement: Solution must be reproducible/runnable)
+!models/product_classifier.pkl
+!models/label_encoder.pkl
+
+# --- PYTHON / ENVIRONMENT ---
+__pycache__/
+*.pyc
+.env
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+.pytest_cache/
