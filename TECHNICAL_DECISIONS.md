@@ -56,6 +56,7 @@ While classes like "Beverages" reached F1-scores of 0.95, "Specialty" scored sig
 * **Monitoring Strategy:** I recommend tracking **Prediction Latency** and **Label Distribution**. If the predicted labels start drifting significantly from the training distribution, it indicates a shift in the product catalog that requires a model retrain.
 
 ## 6. Results Analysis
+![Alt Text](https://github.com/Seanlee05/product_classification/blob/main/data/valid_result.png)
 * **Overall Accuracy:** 93% on verified validation data.
 * **Top Performing Class:** `Household & Personal Care` (F1-Score: 0.96). The vocabulary for this class (e.g., "shampoo", "detergent", "diapers") is very distinct.
 * **Challenging Class:** `Specialty & Miscellaneous` (F1-Score: 0.68). 
