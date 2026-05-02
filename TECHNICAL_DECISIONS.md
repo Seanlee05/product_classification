@@ -38,7 +38,15 @@ To prevent the model from ignoring the minority "Specialty" class, I implemented
 1. **Stratified Splitting:** Ensuring the train/test sets maintained the same class proportions.
 2. **Class Weighting:** Applied `class_weight='balanced'` during training, which automatically adjusts weights inversely proportional to class frequencies.
 
-## 3. Error Analysis
+## 3. Results Analysis
+![Alt Text](https://github.com/Seanlee05/product_classification/blob/main/data/valid_result.png)
+* **Overall Accuracy:** 93% on verified validation data.
+* **Top Performing Class:** `Household & Personal Care` (F1-Score: 0.95). The vocabulary for this class (e.g., "shampoo", "detergent", "diapers") is very distinct.
+* **Challenging Class:** `Specialty & Miscellaneous` (F1-Score: 0.68). 
+  * *Root Cause:* As a "catch-all" category, it contains terms that overlap with `Dry Goods`. For example, "Organic Rice Vinegar" could semantically fit in both.
+  * *Recommendation:* This class would benefit from a "Human-in-the-loop" review if the model's prediction confidence is below 70%.
+
+## 4. Error Analysis
 The model achieved an overall accuracy of **93%** on the validation set.
 
 **Observation on "Specialty & Miscellaneous":**
@@ -46,25 +54,17 @@ While classes like "Beverages" reached F1-scores of 0.95, "Specialty" scored sig
 * **Reasoning:** This is a "catch-all" category. Its vocabulary overlaps significantly with other classes, making it semantically ambiguous. 
 * **Recommendation:** In a production environment, this class should trigger a "low confidence" flag for manual human review.
 
-## 4. Production Service & Architecture
+## 5. Production Service & Architecture
 * **FastAPI:** Chosen for the inference service due to its high performance, asynchronous support, and automatic documentation (Swagger UI).
 * **Docker:** The entire environment is containerized using a `python:3.9-slim` base image to ensure the model runs identically in development and production.
 * **Endpoint Design:**
     * `GET /health`: Verifies the service is alive and the `.pkl` model is correctly loaded into memory.
     * `POST /predict`: Accepts JSON input and returns the predicted category along with the original description.
 
-## 5. Deployment & Scaling
+## 6. Deployment & Scaling
 * **Containerization:** The `Dockerfile` packages the model and code.
 * **Scaling:** The service is stateless. In a cloud environment, it can be deployed on **AWS ECS Fargate** or **Kubernetes**, scaling horizontally based on CPU/Request count.
 * **Monitoring Strategy:** I recommend tracking **Prediction Latency** and **Label Distribution**. If the predicted labels start drifting significantly from the training distribution, it indicates a shift in the product catalog that requires a model retrain.
-
-## 6. Results Analysis
-![Alt Text](https://github.com/Seanlee05/product_classification/blob/main/data/valid_result.png)
-* **Overall Accuracy:** 93% on verified validation data.
-* **Top Performing Class:** `Household & Personal Care` (F1-Score: 0.95). The vocabulary for this class (e.g., "shampoo", "detergent", "diapers") is very distinct.
-* **Challenging Class:** `Specialty & Miscellaneous` (F1-Score: 0.68). 
-  * *Root Cause:* As a "catch-all" category, it contains terms that overlap with `Dry Goods`. For example, "Organic Rice Vinegar" could semantically fit in both.
-  * *Recommendation:* This class would benefit from a "Human-in-the-loop" review if the model's prediction confidence is below 70%.
 
 ## 7. System Architecture Diagram
 This diagram shows the end-to-end data flow of the production system:
