@@ -30,6 +30,9 @@ I systematically compared three distinct approaches using a **TF-IDF Vectorizer*
 ### Why Linear SVM (SGD) Won:
 The **Linear SVM** was selected for production because it achieved the highest **Macro F1-Score (0.8958)** with the lowest training time. SVMs are mathematically robust for high-dimensional text data where the relationship between words and categories is often linearly separable.
 
+### Linear SVM (SGD) Training Result:
+![Alt Text](https://github.com/Seanlee05/product_classification/blob/main/data/train_result.png)
+
 ### Handling Class Imbalance:
 To prevent the model from ignoring the minority "Specialty" class, I implemented:
 1. **Stratified Splitting:** Ensuring the train/test sets maintained the same class proportions.
