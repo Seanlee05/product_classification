@@ -27,9 +27,7 @@ docker build -t product-classifier .
 docker run -p 8000:8000 product-classifier
 ```
 
-Once the container is running:
-
-Can do testing at here:
+### Once the container is running, Can do testing at here:
 
 Interactive API Documentation (Swagger UI): http://localhost:8000/docs
 
