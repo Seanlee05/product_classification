@@ -1,7 +1,5 @@
 # --- DATA ---
-# Ignore the raw NIQ input datasets (Requirement: Do NOT include datasets)
-data/Training_data.csv
-data/Query_and_Validation_data.csv
+data/
 
 # DO NOT ignore your results (Requirement: Artifacts / predictions on query data)
 !data/Query_and_Validation_prediction.csv
