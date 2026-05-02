@@ -26,18 +26,6 @@ I systematically compared three distinct approaches using a **TF-IDF Vectorizer*
 | Logistic Regression | 2.42s | 0.8780 |
 | **Linear SVM (via SGD)** | **0.55s** | **0.8958** |
 | Random Forest | 13.58s | 0.8789 |
-
-### Train Results (SVM)
-```markdown
-### Model Performance Visualization
-![Confusion Matrix](data/train_confusion_matrix.png)
-```
-
-### Valid Results (SVM)
-```markdown
-### Model Performance Visualization
-![Confusion Matrix](data/valid_confusion_matrix.png)
-```
     
 ### Why Linear SVM (SGD) Won:
 The **Linear SVM** was selected for production because it achieved the highest **Macro F1-Score (0.8958)** with the lowest training time. SVMs are mathematically robust for high-dimensional text data where the relationship between words and categories is often linearly separable.
@@ -82,10 +70,11 @@ This diagram shows the end-to-end data flow of the production system:
        |
        v
 [ src/train.py ] --> Evaluates Models --> [ models/product_classifier.pkl ]
-       |                                  [ models/experiment_log.txt    ]
+       |                                
        v
-[ src/predict.py ] --> Internal Validation & Inference --> [ data/query_predictions.csv ]
+[ src/predict.py ] --> Internal Validation & Inference --> [ data/Query_and_Validation_predictions.csv ]
                                                        --> [ data/valid_confusion_matrix.png ]
+                                                       --> [ data/train_confusion_matrix.png ]
        |
        v
 [ src/api.py (FastAPI) ] <--- Model Loading
