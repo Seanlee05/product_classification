@@ -61,7 +61,7 @@ While classes like "Beverages" reached F1-scores of 0.95, "Specialty" scored sig
 ## 6. Results Analysis
 ![Alt Text](https://github.com/Seanlee05/product_classification/blob/main/data/valid_result.png)
 * **Overall Accuracy:** 93% on verified validation data.
-* **Top Performing Class:** `Household & Personal Care` (F1-Score: 0.96). The vocabulary for this class (e.g., "shampoo", "detergent", "diapers") is very distinct.
+* **Top Performing Class:** `Household & Personal Care` (F1-Score: 0.95). The vocabulary for this class (e.g., "shampoo", "detergent", "diapers") is very distinct.
 * **Challenging Class:** `Specialty & Miscellaneous` (F1-Score: 0.68). 
   * *Root Cause:* As a "catch-all" category, it contains terms that overlap with `Dry Goods`. For example, "Organic Rice Vinegar" could semantically fit in both.
   * *Recommendation:* This class would benefit from a "Human-in-the-loop" review if the model's prediction confidence is below 70%.
